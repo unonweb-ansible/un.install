@@ -1,0 +1,32 @@
+---
+- name: un.install
+  tags:
+    - un.install
+  vars:
+    __un_install_path_icon: "{{ un_install_dst_path }}/{{ un_install_icon }}"
+    __un_install_path_exec: "{{ un_install_dst_path }}/{{ un_install_exec }}"
+  block:
+
+  # debug
+  - when: false
+    ansible.builtin.debug:
+      msg:
+      - "un_install_exec_link: {{ un_install_exec_link }}"
+      - "__un_install_path_exec: {{ __un_install_path_exec }}"
+
+  # assert
+  - name: Assertions for un.install role
+    ansible.builtin.assert:
+      that:
+      - un_install_app != None
+
+  # state: present
+  - when: un_install_state == "present"
+    ansible.builtin.import_tasks: state.present.yml
+
+  # systemd
+  - ansible.builtin.import_tasks: systemd.yml
+
+  # state: absent
+  - when: un_install_state == "absent"
+    ansible.builtin.import_tasks: state.absent.yml

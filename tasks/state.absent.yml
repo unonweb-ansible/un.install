@@ -1,0 +1,10 @@
+
+- name: Remove {{ role_name }}
+  become: true
+  failed_when: false
+  loop:
+  - "{{ un_install_dst_path }}"
+  - "{{ un_install.dst.exec.link_to }}"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent

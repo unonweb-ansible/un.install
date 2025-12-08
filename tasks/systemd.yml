@@ -1,0 +1,102 @@
+# copy
+- when: 
+  - un_install_systemd_copy | length > 0
+  - un_install_systemd_scope == "system"
+  name: Copy systemd unit files {{ un_install_systemd_copy }}
+  become: true
+  notify: systemctl --system daemon-reload
+  loop: "{{ un_install_systemd_copy }}"
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files/{{ un_install_app }}/{{ item }}"
+    dest: "/etc/systemd/system/{{ item.split('/')[-1] }}" # systemd/un.machines.service -> un.machines.service
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+
+# template
+- when: 
+  - un_install_systemd_template | length > 0
+  - un_install_systemd_scope == "system"
+  name: Template systemd unit files {{ un_install_systemd_template }}
+  become: true
+  notify: systemctl --system daemon-reload
+  loop: "{{ un_install_systemd_template }}"
+  ansible.builtin.template:
+    src: "{{ role_path }}/files/{{ un_install_app }}/{{ item }}"
+    dest: "/etc/systemd/system/{{ item.split('/')[-1].replace('.j2', '') }}" # systemd/un.machines.service.j2 -> un.machines.service.j2 -> systemd/un.machines.service
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+
+# reset
+- when: un_install_systemd_reset | length > 0
+  name: Reset systemd unit overrides {{ un_install_systemd_reset }}
+  loop: "{{ un_install_systemd_reset }}"
+  become: true
+  ansible.builtin.file:
+    path: "/etc/systemd/system/{{ item }}.d"
+    state: absent
+
+# overrides
+- when: un_install_systemd_overrides | length > 0
+  block:
+
+  # mkdir overrides
+  - name: Mkdir in /etc/systemd/system/...
+    become: true
+    loop: "{{ un_install_systemd_overrides }}"
+    ansible.builtin.file:
+      path: "/etc/systemd/system/{{ item | dirname }}"
+      state: directory
+      owner: root
+      group: root
+      mode: o=rwx,g=rx,o=rx
+
+  # cp overrides
+  - name: Copy systemd unit overrides {{ un_install_systemd_overrides }}
+    become: true
+    notify: systemctl --system daemon-reload
+    loop: "{{ un_install_systemd_overrides }}"
+    ansible.builtin.copy:
+      src: "{{ role_path }}/files/{{ un_install_app }}/{{ item }}"
+      dest: "/etc/systemd/system/{{ item }}"
+      force: true
+      owner: root
+      group: root
+      mode: u=rw,g=r,o=r
+
+# enable
+- when: un_install_systemd_enable | length > 0
+  name: systemctl enable {{ un_install_systemd_enable }}
+  become: true
+  loop: "{{ un_install_systemd_enable }}"
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    enabled: true
+
+# disable
+- when: un_install_systemd_disable | length > 0
+  name: systemctl disable {{ un_install_systemd_disable }}
+  become: true
+  loop: "{{ un_install_systemd_disable }}"
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    enabled: false
+
+# start
+- when: un_install_systemd_start | length > 0
+  name: systemctl start {{ un_install_systemd_start }}
+  become: true
+  loop: "{{ un_install_systemd_start }}"
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    state: started
+
+# stop
+- when: un_install_systemd_stop | length > 0
+  name: systemctl stop {{ un_install_systemd_stop }}
+  become: true
+  loop: "{{ un_install_systemd_stop }}"
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    state: stopped
