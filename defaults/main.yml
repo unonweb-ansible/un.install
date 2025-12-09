@@ -8,16 +8,17 @@ un_install_with_fs_tmp: "/home/ansible/tmp/{{ role_name }}/{{ un_install_app }}"
 un_install_with_git_url:
 un_install_with_git_force: false
 # DST
-un_install_dst_path: /home/{{ un_install_user }}/opt/{{ un_install_app }}
+un_install_dst_path: "/home/{{ un_install_user }}/opt/{{ un_install_app }}"
 un_install_dst_mode: u=rwx,g=,o=
 # ENV
 un_install_desktop:
-un_install_env:
+un_install_env: # file relative to {{ role }}/{{ app }}/
+un_install_env_dst: "{{ un_install_dst_path }}/"
 un_install_icon: icon.png
 # EXEC
 un_install_exec: src/main.sh # relative path
 un_install_exec_mode: u=rwx,g=,o=
-un_install_exec_link: /home/{{ un_install_user }}/.local/bin/{{ un_install_app }}
+un_install_exec_link: "/home/{{ un_install_user }}/.local/bin/{{ un_install_app }}"
 # SYSTEMD
 un_install_systemd_scope: system
 un_install_systemd_copy: []
