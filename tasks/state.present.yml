@@ -53,16 +53,25 @@
 # exec
 - block:
 
+  # mkdir
+  - name: Mkdir "{{ un_install_exec_link | dirname }}"
+    become: true
+    ansible.builtin.file:
+      state: directory
+      path: "{{ un_install_exec_link | dirname }}"
+      owner: "{{ un_install_user }}"
+      group: "{{ un_install_user }}"
+
   # link
   - when: un_install_exec_link is not false
     name: Link {{ __un_install_path_exec }} to {{ un_install_exec_link }}
     become: true
     ansible.builtin.file:
+      state: link
       src: "{{ __un_install_path_exec }}" # Path of file to link to
       dest: "{{ un_install_exec_link }}" # Path to file being managed (/path/to/symlink)
       owner: "{{ un_install_user }}"
       group: "{{ un_install_user }}"
-      state: link
 
   # chmod
   - name: Chmod {{ un_install_exec_mode }} {{ un_install_exec }}
