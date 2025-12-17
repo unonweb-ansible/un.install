@@ -14,6 +14,7 @@ un_install_dst_mode: u=rwx,g=,o=
 un_install_desktop:
 un_install_env: # file relative to {{ role }}/{{ app }}/
 un_install_env_dst: "{{ un_install_dst_path }}/"
+un_install_env_force: true
 un_install_icon: icon.png
 # EXEC
 un_install_exec: src/main.sh # relative path

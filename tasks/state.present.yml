@@ -90,6 +90,7 @@
     owner: "{{ un_install_user }}"
     group: "{{ un_install_user }}"
     mode: preserve
+    force: "{{ un_install_env_force }}"
 
 # desktop
 - when: un_install_desktop != None
