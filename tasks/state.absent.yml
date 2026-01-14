@@ -1,4 +1,4 @@
-
+---
 - name: Remove {{ role_name }}
   become: true
   failed_when: false
