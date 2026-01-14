@@ -14,17 +14,29 @@
 - when: 
   - un_install_with_git_url != None
   - un_install_with_fs_src == None
-  name: Git clone/pull {{ un_install_with_git_url }} to {{ un_install_dst_path }}
-  become: true
-  become_user: "{{ un_install_user }}"
-  ansible.builtin.git:
-    repo: "{{ un_install_with_git_url }}"
-    dest: "{{ un_install_dst_path }}"
-    remote: origin
-    clone: true
-    update: true # retrieve new revisions from the origin repository
-    force: "{{ un_install_with_git_force }}"
-    accept_hostkey: true
+  block:
+
+  # install git
+  - name: Install apt packages
+    become: true
+    ansible.builtin.apt:
+      update_cache: false
+      state: present
+      name: git
+
+  # git clone
+  - name: Git clone/pull {{ un_install_with_git_url }} to {{ un_install_dst_path }}
+    become: true
+    become_user: "{{ un_install_user }}"
+    ansible.builtin.git:
+      repo: "{{ un_install_with_git_url }}"
+      dest: "{{ un_install_dst_path }}"
+      remote: origin
+      clone: true
+      update: true # retrieve new revisions from the origin repository
+      force: "{{ un_install_with_git_force }}"
+      key_file: "{{ un_install_with_git_ssh_key_file }}"
+      accept_hostkey: true
 
 # install from fs
 - when: 
