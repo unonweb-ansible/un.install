@@ -1,7 +1,7 @@
 ---
-- name: un.install
+- name: un-install
   tags:
-    - un.install
+    - un-install
     - un-install
   vars:
     __un_install_path_icon: "{{ un_install_dst_path }}/{{ un_install_icon }}"
@@ -16,7 +16,7 @@
       - "__un_install_path_exec: {{ __un_install_path_exec }}"
 
   # assert
-  - name: Assertions for un.install role
+  - name: Assertions for un-install role
     ansible.builtin.assert:
       that:
       - un_install_app != None
