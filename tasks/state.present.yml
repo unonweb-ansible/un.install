@@ -17,7 +17,7 @@
   block:
 
   # install git
-  - name: Install apt packages
+  - name: Make sure git is installed
     become: true
     ansible.builtin.apt:
       update_cache: false
