@@ -20,6 +20,12 @@
     ansible.builtin.assert:
       that:
       - un_install_app != None
+      - un_install_user != None
+
+  # make sure user exists
+  - name: Check if user exists {{ un_install_user }}
+    command: "getent passwd {{ un_install_user }}"
+    changed_when: false
 
   # state: present
   - when: un_install_state == "present"
