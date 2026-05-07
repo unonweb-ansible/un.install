@@ -106,7 +106,7 @@
 
 # desktop
 - when: un_install_desktop != None
-  name: Template desktop file {{ un_install_desktop }}
+  name: Template desktop file {{ un_install_desktop_dst }}
   become: true
   ansible.builtin.template:
     src: "{{ role_path }}/files/{{ un_install_app }}/{{ un_install_desktop }}"

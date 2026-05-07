@@ -13,7 +13,7 @@ un_install_dst_path: "{{ '/root/opt/' + un_install_app if un_install_user == 'ro
 un_install_dst_mode: u=rwx,g=,o=
 # DESKTOP
 un_install_desktop:
-un_install_desktop_dst: /usr/share/applications/{{ un_install_app }}.desktop
+un_install_desktop_dst: "{{ '/usr/share/applications/' + un_install_app + '.desktop' if un_install_user == 'root' else '/home/' + un_install_user + '/.local/share/applications/' + un_install_app + '.desktop' }}"
 # ENV
 un_install_env: 
 # file relative to {{ role }}/{{ app }}/ 
