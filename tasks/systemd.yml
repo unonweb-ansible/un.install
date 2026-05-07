@@ -49,7 +49,7 @@
         state: directory
         owner: root
         group: root
-        mode: o=rwx,g=rx,o=rx
+        mode: u=rwx,g=rx,o=rx
 
     # cp overrides
     - name: Copy systemd system unit overrides {{ un_install_systemd_overrides }}

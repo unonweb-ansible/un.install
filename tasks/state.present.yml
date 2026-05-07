@@ -17,7 +17,7 @@
   block:
 
   # install git
-  - name: Install apt packages
+  - name: Make sure git is installed
     become: true
     ansible.builtin.apt:
       update_cache: false
@@ -110,7 +110,7 @@
   become: true
   ansible.builtin.template:
     src: "{{ role_path }}/files/{{ un_install_app }}/{{ un_install_desktop }}"
-    dest: "/usr/share/applications/{{ un_install_app }}.desktop"
+    dest: "{{ un_install_desktop_dst }}"
     owner: root
     group: root
     mode: u=rw,g=,o=r # world readable
