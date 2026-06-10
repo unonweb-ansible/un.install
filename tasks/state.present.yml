@@ -113,4 +113,18 @@
     dest: "{{ un_install_desktop_dst }}"
     owner: root
     group: root
-    mode: u=rw,g=,o=r # world readable
+    mode: u=rw,g=,o=r
+    
+# polkit
+- when: un_install_polkit_rules | length > 0
+  name: Copy polkit rules {{ un_install_polkit_rules }}
+  become: true
+  loop: "{{ un_install_polkit_rules }}"
+  loop_control:
+    loop_var: __un_install_polkit_rule
+  ansible.builtin.template:
+    src: "{{ __un_install_polkit_rule }}"
+    dest: "{{ un_install_polkit_rules_dst }}/{{ __un_install_polkit_rule | basename }}"
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r

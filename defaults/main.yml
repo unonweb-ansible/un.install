@@ -22,6 +22,9 @@ un_install_env_dst: # path relative to {{ un_install_dst_path }}
 un_install_env_force: true
 # ICON
 un_install_icon: icon.png
+# POLKIT
+un_install_polkit_rules: []
+un_install_polkit_rules_dst: /etc/polkit-1/rules.d
 # EXEC
 un_install_exec: src/main.sh # relative path
 un_install_exec_mode: u=rwx,g=,o=
