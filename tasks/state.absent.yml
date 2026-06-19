@@ -1,10 +1,25 @@
 ---
-- name: Remove {{ role_name }}
+- ansible.builtin.assert:
+    that:
+      - un_install_app != None
+
+- when: un_install_app in un_install_dst_path
+  name: Remove {{ un_install_dst_path }}
   become: true
-  failed_when: false
-  loop:
-  - "{{ un_install_dst_path }}"
-  - "{{ un_install.dst.exec.link_to }}"
   ansible.builtin.file:
-    path: "{{ item }}"
+    path: "{{ un_install_dst_path }}"
+    state: absent
+
+- when: un_install_app in un_install_desktop_dst
+  name: Remove {{ un_install_desktop_dst }}
+  become: true
+  ansible.builtin.file:
+    path: "{{ un_install_desktop_dst }}"
+    state: absent
+  
+- when: un_install_app in un_install_exec_link
+  name: Remove {{ un_install_exec_link }}
+  become: true
+  ansible.builtin.file:
+    path: "{{ un_install_exec_link }}"
     state: absent
