@@ -10,16 +10,38 @@
     path: "{{ un_install_dst_path }}"
     state: absent
 
-- when: un_install_app in un_install_desktop_dst
+- when:
+  - un_install_desktop_dst != None
+  - un_install_app in un_install_desktop_dst
   name: Remove {{ un_install_desktop_dst }}
   become: true
   ansible.builtin.file:
     path: "{{ un_install_desktop_dst }}"
     state: absent
   
-- when: un_install_app in un_install_exec_link
+- when:
+  - un_install_exec_link != None
+  - un_install_app in un_install_exec_link
   name: Remove {{ un_install_exec_link }}
   become: true
   ansible.builtin.file:
     path: "{{ un_install_exec_link }}"
+    state: absent
+
+- when: un_install_env_dst != None
+  name: Remove {{ un_install_env_dst }}
+  become: true
+  ansible.builtin.file:
+    path: "{{ un_install_env_dst }}"
+    state: absent
+
+# polkit
+- when: un_install_polkit_rules | length > 0
+  name: Remove polkit rules {{ un_install_polkit_rules }}
+  become: true
+  loop: "{{ un_install_polkit_rules }}"
+  loop_control:
+    loop_var: __un_install_polkit_rule
+  ansible.builtin.file:
+    path: "{{ un_install_polkit_rules_dst }}/{{ __un_install_polkit_rule | basename }}"
     state: absent
