@@ -2,33 +2,43 @@
 un_install_app:
 un_install_user: root
 un_install_state: present
+
 # INSTALL FROM
 un_install_with_fs_src:
 un_install_with_fs_tmp: "/home/ansible/tmp/{{ role_name }}/{{ un_install_app }}"
 un_install_with_git_url:
 un_install_with_git_force: false
 un_install_with_git_ssh_key_file: /home/{{ un_install_user }}/.ssh/id_ed25519
+
 # DST
-un_install_dst_path: "{{ '/root/opt/' + un_install_app if un_install_user == 'root' else '/home/' + un_install_user + '/opt/' + un_install_app }}"
 un_install_dst_mode: u=rwx,g=,o=
+un_install_dst_path: "{{ '/opt/' + un_install_app if un_install_user == 'root' else '/home/' + un_install_user + '/opt/' + un_install_app }}"
+# alternative for root: '/root/opt'
+
 # DESKTOP
 un_install_desktop:
 un_install_desktop_dst: "{{ '/usr/share/applications/' + un_install_app + '.desktop' if un_install_user == 'root' else '/home/' + un_install_user + '/.local/share/applications/' + un_install_app + '.desktop' }}"
+
 # ENV
 un_install_env: 
 # file relative to {{ role }}/{{ app }}/ 
 # will be copied with the same name
 un_install_env_dst: # path relative to {{ un_install_dst_path }}
 un_install_env_force: true
+
 # ICON
 un_install_icon: icon.png
+
 # POLKIT
 un_install_polkit_rules: []
 un_install_polkit_rules_dst: /etc/polkit-1/rules.d
+
 # EXEC
 un_install_exec: src/main.sh # relative path
 un_install_exec_mode: u=rwx,g=,o=
-un_install_exec_link: "{{ '/root/.local/bin/' + un_install_app if un_install_user == 'root' else '/home/' + un_install_user + '/.local/bin/' + un_install_app }}"
+un_install_exec_link: "{{ '/usr/local/bin/' + un_install_app if un_install_user == 'root' else '/home/' + un_install_user + '/.local/bin/' + un_install_app }}"
+# alternative for root: '/root/.local/bin/'
+
 # SYSTEMD
 un_install_systemd_scope: system
 un_install_systemd_copy: []
