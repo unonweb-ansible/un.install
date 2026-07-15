@@ -1,0 +1,14 @@
+[Unit]
+Description=Backup snapshots
+
+[Service]
+Type=oneshot
+ExecStart=-{{ __un_install_path_exec }} /.snapshots/@                                /media/back-2000-1/.snapshots/@
+ExecStart=-{{ __un_install_path_exec }} /.snapshots/@var-lib-machines-dmz-db         /media/back-2000-1/.snapshots/@var-lib-machines-dmz-db
+ExecStart=-{{ __un_install_path_exec }} /.snapshots/@var-lib-machines-ghost-ub       /media/back-2000-1/.snapshots/@var-lib-machines-ghost-ub
+ExecStart=-{{ __un_install_path_exec }} /.snapshots/@var-lib-machines-nextcloud-db   /media/back-2000-1/.snapshots/@var-lib-machines-nextcloud-db
+Restart=no
+StandardOutput=journal+console
+StandardError=journal+console
+SyslogIdentifier=%N
+SyslogLevelPrefix=true

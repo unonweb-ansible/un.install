@@ -1,0 +1,15 @@
+[Unit]
+Description=Cleanup snapshots
+
+[Service]
+Type=oneshot
+ExecStart=-{{ __un_install_path_exec }} /.snapshots/@ 7
+ExecStart=-{{ __un_install_path_exec }} /.snapshots/@var-lib-machines-dmz-db 7
+ExecStart=-{{ __un_install_path_exec }} /.snapshots/@var-lib-machines-ghost-ub 7
+ExecStart=-{{ __un_install_path_exec }} /.snapshots/@var-lib-machines-nextcloud-db 7
+
+Restart=no
+StandardOutput=journal+console
+StandardError=journal+console
+SyslogIdentifier=%N
+SyslogLevelPrefix=true

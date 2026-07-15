@@ -1,0 +1,11 @@
+[Unit]
+Description=Take snapshots of machines in /var/lib/machines
+
+[Service]
+Type=oneshot
+ExecStart={{ __un_install_path_exec }}
+Restart=no
+StandardOutput=journal+console
+StandardError=journal+console
+SyslogIdentifier=%N
+SyslogLevelPrefix=true
