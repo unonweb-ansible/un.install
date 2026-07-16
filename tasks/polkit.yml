@@ -1,0 +1,33 @@
+---
+# install
+- when: un_install_state == "present"
+  block:
+
+  # polkit
+  - when: un_install_polkit_rules | length > 0
+    name: Copy polkit rules {{ un_install_polkit_rules }}
+    become: true
+    loop: "{{ un_install_polkit_rules }}"
+    loop_control:
+      loop_var: __un_install_polkit_rule
+    ansible.builtin.template:
+      src: "{{ role_path }}/files/{{ un_install_app }}/{{ __un_install_polkit_rule }}"
+      dest: "{{ un_install_polkit_rules_dst }}/{{ __un_install_polkit_rule | basename }}"
+      owner: root
+      group: root
+      mode: u=rw,g=r,o=r
+
+# remove
+- when: un_install_state == "absent"
+  block:
+
+  # polkit
+  - when: un_install_polkit_rules | length > 0
+    name: Remove polkit rules {{ un_install_polkit_rules }}
+    become: true
+    loop: "{{ un_install_polkit_rules }}"
+    loop_control:
+      loop_var: __un_install_polkit_rule
+    ansible.builtin.file:
+      path: "{{ un_install_polkit_rules_dst }}/{{ __un_install_polkit_rule | basename }}"
+      state: absent
