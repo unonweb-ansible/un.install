@@ -5,11 +5,12 @@
   - un_install_desktop != None
   block:
 
-  - name: Mkdir {{ un_install_desktop_dst }}
+  # mkdir
+  - name: Mkdir {{ un_install_desktop_dst | dirname }}
     become: true
     ansible.builtin.file:
       state: directory
-      path: "{{ un_install_desktop_dst }}"
+      path: "{{ un_install_desktop_dst | dirname }}"
       owner: "{{ un_install_user if un_install_desktop_dst.startswith('/home/') else 'root'}}"
       group: "{{ un_install_user if un_install_desktop_dst.startswith('/home/') else 'root'}}"
       mode: u=rw,g=r,o=r
