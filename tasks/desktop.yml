@@ -1,16 +1,26 @@
 ---
 # install
-- when: un_install_state == "present"
+- when: 
+  - un_install_state == "present"
+  - un_install_desktop != None
   block:
 
-  - when: un_install_desktop != None
-    name: Template desktop file {{ un_install_desktop_dst }}
+  - name: Mkdir {{ un_install_desktop_dst }}
+    become: true
+    ansible.builtin.file:
+      state: directory
+      path: "{{ un_install_desktop_dst }}"
+      owner: "{{ un_install_user if un_install_desktop_dst.startswith('/home/') else 'root'}}"
+      group: "{{ un_install_user if un_install_desktop_dst.startswith('/home/') else 'root'}}"
+      mode: u=rw,g=r,o=r
+
+  - name: Template desktop file {{ un_install_desktop_dst }}
     become: true
     ansible.builtin.template:
       src: "{{ role_path }}/files/{{ un_install_app }}/{{ un_install_desktop }}"
       dest: "{{ un_install_desktop_dst }}"
-      owner: root
-      group: root
+      owner: "{{ un_install_user if un_install_desktop_dst.startswith('/home/') else 'root'}}"
+      group: "{{ un_install_user if un_install_desktop_dst.startswith('/home/') else 'root'}}"
       mode: u=rw,g=,o=r
 
 # remove
