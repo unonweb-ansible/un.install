@@ -1,0 +1,23 @@
+[Unit]
+Description=File Guard
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart={{ __un_install_path_exec }}
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=%N
+SyslogLevelPrefix=true
+
+# Security hardening
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=true
+ReadWritePaths={{ un_install_dst_path }}/log
+
+[Install]
+WantedBy=multi-user.target

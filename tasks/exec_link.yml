@@ -1,0 +1,38 @@
+---
+# install
+- when: 
+  - un_install_state == "present"
+  - un_install_exec_link != false
+  block:
+
+  # mkdir
+  - name: Mkdir "{{ un_install_exec_link | dirname }}"
+    become: true
+    ansible.builtin.file:
+      state: directory
+      path: "{{ un_install_exec_link | dirname }}"
+      owner: "{{ un_install_user }}"
+      group: "{{ un_install_user }}"
+
+  # link
+  - name: Link {{ __un_install_path_exec }} to {{ un_install_exec_link }}
+    become: true
+    ansible.builtin.file:
+      state: link
+      src: "{{ __un_install_path_exec }}" # Path of file to link to
+      dest: "{{ un_install_exec_link }}" # Path to file being managed (/path/to/symlink)
+      owner: "{{ un_install_user }}"
+      group: "{{ un_install_user }}"
+
+# remove
+- when: un_install_state == "absent"
+  block:
+
+  - when:
+    - un_install_exec_link != None
+    - un_install_app in un_install_exec_link
+    name: Remove {{ un_install_exec_link }}
+    become: true
+    ansible.builtin.file:
+      path: "{{ un_install_exec_link }}"
+      state: absent

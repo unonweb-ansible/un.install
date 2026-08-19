@@ -1,0 +1,19 @@
+[Unit]
+Description=Monitor SMART values
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart={{ __un_install_path_exec }}
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=%N
+SyslogLevelPrefix=true
+
+# Security hardening
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths={{ un_install_dst_path }}/log
+ReadWritePaths={{ un_install_dst_path }}/state
+ReadWritePaths={{ un_install_dst_path }}/tmp

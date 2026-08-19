@@ -1,0 +1,18 @@
+[Unit]
+Description=Monitor running services against a whitelist
+After=network.target
+
+[Service]
+Type=oneshot
+User=root
+ExecStart={{ __un_install_path_exec }}
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=%N
+SyslogLevelPrefix=true
+
+# Security hardening
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=true
+ReadWritePaths={{ un_install_dst_path }}/state

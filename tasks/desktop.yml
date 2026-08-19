@@ -1,0 +1,27 @@
+---
+# install
+- when: un_install_state == "present"
+  block:
+
+  - when: un_install_desktop != None
+    name: Template desktop file {{ un_install_desktop_dst }}
+    become: true
+    ansible.builtin.template:
+      src: "{{ role_path }}/files/{{ un_install_app }}/{{ un_install_desktop }}"
+      dest: "{{ un_install_desktop_dst }}"
+      owner: root
+      group: root
+      mode: u=rw,g=,o=r
+
+# remove
+- when: un_install_state == "absent"
+  block:
+
+  - when:
+    - un_install_desktop_dst != None
+    - un_install_app in un_install_desktop_dst
+    name: Remove {{ un_install_desktop_dst }}
+    become: true
+    ansible.builtin.file:
+      path: "{{ un_install_desktop_dst }}"
+      state: absent

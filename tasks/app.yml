@@ -1,0 +1,40 @@
+---
+# install
+- when: un_install_state == "present"
+  block:
+
+  # mkdir
+  - name: Mkdir {{ un_install_dst_path }}
+    become: true
+    ansible.builtin.file:
+      state: directory
+      path: "{{ un_install_dst_path }}"
+      mode: "{{ un_install_dst_mode }}"
+      owner: "{{ un_install_user }}"
+      group: "{{ un_install_user }}"
+
+  - ansible.builtin.import_tasks: app_install_with_git.yml
+  - ansible.builtin.import_tasks: app_install_with_fs.yml
+
+  # chmod exec
+  - when: un_install_exec_mode != None
+    name: Chmod {{ un_install_exec_mode }} {{ un_install_exec }}
+    become: true
+    ansible.builtin.file:
+      path: "{{ un_install_dst_path }}/{{ un_install_exec }}"
+      mode: "{{ un_install_exec_mode }}"
+
+# remove
+- when: un_install_state == "absent"
+  block:
+
+  - ansible.builtin.assert:
+      that:
+        - un_install_app != None
+
+  - when: un_install_app in un_install_dst_path
+    name: Remove {{ un_install_dst_path }}
+    become: true
+    ansible.builtin.file:
+      path: "{{ un_install_dst_path }}"
+      state: absent
