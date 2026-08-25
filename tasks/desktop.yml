@@ -13,7 +13,7 @@
       path: "{{ un_install_desktop_dst | dirname }}"
       owner: "{{ un_install_user if un_install_desktop_dst.startswith('/home/') else 'root'}}"
       group: "{{ un_install_user if un_install_desktop_dst.startswith('/home/') else 'root'}}"
-      mode: u=rw,g=r,o=r
+      mode: u=rwx,g=r,o=r
 
   - name: Template desktop file {{ un_install_desktop_dst }}
     become: true
