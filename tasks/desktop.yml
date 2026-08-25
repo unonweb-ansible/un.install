@@ -15,8 +15,10 @@
       group: "{{ un_install_user if un_install_desktop_dst.startswith('/home/') else 'root'}}"
       mode: u=rwx,g=r,o=r
 
+  # template
   - name: Template desktop file {{ un_install_desktop_dst }}
     become: true
+    notify: update-desktop-database
     ansible.builtin.template:
       src: "{{ role_path }}/files/{{ un_install_app }}/{{ un_install_desktop }}"
       dest: "{{ un_install_desktop_dst }}"

@@ -4,3 +4,7 @@
   ansible.builtin.systemd_service:
     daemon_reload: true
     scope: system
+
+- name: update-desktop-database
+  become: true
+  ansible.builtin.command: "update-desktop-database {{ un_install_desktop_dst | dirname }}"
