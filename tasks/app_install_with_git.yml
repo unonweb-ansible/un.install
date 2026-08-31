@@ -4,6 +4,7 @@
 - when:
   - un_install_with_git_url != None
   - un_install_with_fs_src == None
+  tags: [un-install-git]
   block:
 
   # install git
