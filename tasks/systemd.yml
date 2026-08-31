@@ -1,4 +1,6 @@
-- when: un_install_systemd_scope == "system"
+- when: 
+  - un_install_systemd_scope == "system"
+  - un_install_state == "present"
   block:
     
   # copy
@@ -103,3 +105,69 @@
       scope: system
       state: stopped
       name: "{{ item }}"
+
+- when: 
+  - un_install_systemd_scope == "system"
+  - un_install_state == "absent"
+  block:
+
+  # stop started
+  - when: un_install_systemd_start | length > 0
+    name: systemctl --system stop {{ un_install_systemd_start }}
+    become: true
+    loop: "{{ un_install_systemd_start }}"
+    ansible.builtin.systemd_service:
+      scope: system
+      state: stopped
+      name: "{{ item }}"
+
+  # disable enabled
+  - when: un_install_systemd_enable | length > 0
+    name: systemctl --system disable {{ un_install_systemd_enable }}
+    become: true
+    loop: "{{ un_install_systemd_enable }}"
+    ansible.builtin.systemd_service:
+      scope: system
+      enabled: false
+      name: "{{ item }}"
+
+  # remove overrides
+  - when: un_install_systemd_overrides | length > 0
+    block:
+
+    # rmdir overrides
+    - name: Rmdir overrides
+      become: true
+      loop: "{{ un_install_systemd_overrides }}"
+      when:
+      - item is defined
+      - item != None
+      ansible.builtin.file:
+        path: "/etc/systemd/system/{{ item | dirname }}"
+        state: absent
+
+  # remove templated
+  - name: Remove templated systemd system unit files {{ un_install_systemd_template }}
+    become: true
+    notify: systemctl --system daemon-reload
+    loop: "{{ un_install_systemd_template }}"
+    when:
+      - un_install_systemd_template | length > 0
+      - item is defined
+      - item != None
+    ansible.builtin.file:
+        path: "/etc/systemd/system/{{ item.split('/')[-1].replace('.j2', '') }}"
+        state: absent
+
+  # remove copied
+  - name: Remove copied systemd unit files {{ un_install_systemd_copy }}
+    become: true
+    notify: systemctl --system daemon-reload
+    loop: "{{ un_install_systemd_copy }}"
+    when:
+      - un_install_systemd_copy | length > 0
+      - item is defined
+      - item != None
+    ansible.builtin.file:
+        path: "/etc/systemd/system/{{ item.split('/')[-1] }}"
+        state: absent
